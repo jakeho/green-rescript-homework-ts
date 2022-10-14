@@ -1,24 +1,14 @@
 import React from 'react'
 import './App.css'
-import logo from './logo.svg'
+import RepoList from './pages/RepoList.bs'
+import { make as Test, Test as Test1 } from './pages/Test.bs'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header text-gray-600 bg-amber-50">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <RepoList />
+      <Test />
+      <Test1.make />
     </div>
   )
 }
