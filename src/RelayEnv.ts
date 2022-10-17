@@ -4,7 +4,6 @@ import { Variables } from 'relay-runtime/lib/util/RelayRuntimeTypes'
 import { GithubGraphQL } from './GithubGraphQL'
 
 async function fetchRelay(request: RequestParameters, variables: Variables) {
-  console.log('fetch relay')
   return GithubGraphQL.fetch(request.text!, variables)
 }
 
