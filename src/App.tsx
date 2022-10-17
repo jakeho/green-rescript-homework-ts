@@ -8,7 +8,7 @@ import RelayEnv from './RelayEnv'
 function App() {
   return (
     <RelayEnvironmentProvider environment={RelayEnv}>
-      <div className="App">
+      <div className="App text-sm">
         {/*<RepoList />*/}
         <RepoListTs />
       </div>

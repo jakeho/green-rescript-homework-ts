@@ -72,9 +72,13 @@ export function RepoList() {
   }
 
   return (
-    <div>
+    <div className="max-w-screen-md mx-auto px-4">
       <div>Hey~ I ❤️ TypeScript.</div>
-      <ul className="text-left max-w-screen-md mx-auto px-4">
+      <div>
+        <input type="text" className="border border-1 p-1 rounded w-1/2" />
+        <button type="button" className="border border-1 p-1 ml-2 rounded">Search</button>
+      </div>
+      <ul className="text-left">
         {renderRepository()}
       </ul>
     </div>
