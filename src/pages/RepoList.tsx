@@ -1,14 +1,26 @@
 import { graphql } from 'babel-plugin-relay/macro'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { loadQuery, useClientQuery } from 'react-relay'
-import { EdgeRecord, PageInfo } from 'relay-runtime'
-import { GithubGraphQL } from '../GithubGraphQL'
+import { PageInfo } from 'relay-runtime'
 import RelayEnv from '../RelayEnv'
 
 interface Search {
   repositoryCount: number
   pageInfo?: PageInfo
-  edges?: EdgeRecord
+  edges?: RepoNode[]
+}
+
+interface RepoNode {
+  cursor: string
+  node: Repo
+}
+
+interface Repo {
+  name: string
+  owner: {
+    id: string
+  }
+  stargazerCount: number
 }
 
 interface RepoListSearchQuery {
@@ -17,7 +29,7 @@ interface RepoListSearchQuery {
 
 const RepoListQuery = graphql`
     query RepoListSearchQuery {
-        search(query: "is:public", type:REPOSITORY, first:10) {
+        search(query: "is:public", type:REPOSITORY, first:20) {
             repositoryCount
             pageInfo {
                 startCursor
@@ -42,51 +54,29 @@ const RepoListQuery = graphql`
 `
 
 export function RepoList() {
-  const [list, setList] = useState({})
-
   const data = useClientQuery(RepoListQuery, {}) as RepoListSearchQuery
 
   useEffect(function () {
     loadQuery(RelayEnv, RepoListQuery, {})
-    GithubGraphQL.fetch(`
-      query RepoListSearchQuery {
-        search(query: "is:public", type:REPOSITORY, first:20) {
-          repositoryCount
-          pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
-          }
-          edges {
-            cursor
-            node {
-              ... on Repository {
-                name
-                owner {
-                  id
-                }
-                stargazerCount
-              }
-            }
-          }
-        }
-      }
-    `).then(function (res) {
-        setList(res)
-      }
-    )
-
-    return function () {
-      setList({})
-    }
   }, [])
 
+  function renderRepository() {
+    return (data?.search?.edges ?? []).map((record) => {
+      return (
+        <li key={`${record?.node?.owner?.id}-${record?.node?.name}`} className="p-2 flex justify-between">
+          <div>{record?.node?.name}</div>
+          <div><span>Stars: </span><span>{record?.node?.stargazerCount}</span></div>
+        </li>
+      )
+    })
+  }
+
   return (
-    <>
+    <div>
       <div>Hey~ I ❤️ TypeScript.</div>
-      <div>{JSON.stringify(list)}</div>
-      <div>{JSON.stringify(data)}</div>
-    </>
+      <ul className="text-left max-w-screen-md mx-auto px-4">
+        {renderRepository()}
+      </ul>
+    </div>
   )
 }
