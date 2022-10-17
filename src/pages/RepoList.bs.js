@@ -5,7 +5,7 @@ import * as React from "react";
 function RepoList$default(Props) {
   return React.createElement("div", {
               className: "p-5"
-            }, React.createElement("div", undefined, "Hey??"), React.createElement("input", {
+            }, React.createElement("div", undefined, "Hey~ I ❤️ ReScript."), React.createElement("input", {
                   className: "border-solid border rounded-md",
                   type: "text"
                 }));

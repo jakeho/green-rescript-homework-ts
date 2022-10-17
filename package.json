@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-relay": "^14.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -12,7 +13,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "res:start": "rescript build -w",
-    "res:build": "rescript"
+    "res:build": "rescript",
+    "relay:start": "relay-compiler --watch",
+    "relay:build": "relay-compiler"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +47,7 @@
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
     "react-scripts": "5.0.1",
+    "relay-compiler": "^14.1.0",
     "rescript": "^10.0.1",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.8.4",
