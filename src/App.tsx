@@ -2,17 +2,15 @@ import React from 'react'
 import { RelayEnvironmentProvider } from 'react-relay'
 import './App.css'
 import { Loading } from './components/Loading'
-import { RepoList as RepoListTs } from './pages/RepoList'
-// import RepoList from './pages/RepoList.bs'
-import RelayEnv from './RelayEnv'
+import { make as GithubRepos } from './pages/GithubRepos.bs'
+import { environment } from './RelayEnv.bs'
 
 function App() {
   return (
-    <RelayEnvironmentProvider environment={RelayEnv}>
+    <RelayEnvironmentProvider environment={environment}>
       <div className="App text-sm p-4">
         <React.Suspense fallback={<Loading />}>
-          {/*<RepoList />*/}
-          <RepoListTs />
+          <GithubRepos />
         </React.Suspense>
       </div>
     </RelayEnvironmentProvider>

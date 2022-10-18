@@ -6914,7 +6914,7 @@ input CreateTeamDiscussionInput {
     """
     If true, restricts the visibility of this discussion to team members and organization admins. If false or not specified, allows any organization member to view this discussion.
     """
-    private: Boolean
+    _private: Boolean
 
     """
     A unique identifier for the client performing the mutation.

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-function RepoList$default(Props) {
+function RepoList(Props) {
   return React.createElement("div", {
               className: "p-5"
             }, React.createElement("div", undefined, "Hey~ I ❤️ ReScript."), React.createElement("input", {
@@ -11,10 +11,9 @@ function RepoList$default(Props) {
                 }));
 }
 
-var $$default = RepoList$default;
+var make = RepoList;
 
 export {
-  $$default ,
-  $$default as default,
+  make ,
 }
 /* react Not a pure module */
