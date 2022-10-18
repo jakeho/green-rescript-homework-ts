@@ -1,31 +1,8 @@
 import { graphql } from 'babel-plugin-relay/macro'
-import React, { SyntheticEvent, useEffect, useState } from 'react'
-import { loadQuery, useClientQuery } from 'react-relay'
-import { PageInfo } from 'relay-runtime'
+import React, { SyntheticEvent, useState } from 'react'
+import { loadQuery, usePreloadedQuery, useQueryLoader } from 'react-relay'
 import RelayEnv from '../RelayEnv'
-
-interface Search {
-  repositoryCount: number
-  pageInfo?: PageInfo
-  edges?: RepoNode[]
-}
-
-interface RepoNode {
-  cursor: string
-  node: Repo
-}
-
-interface Repo {
-  name: string
-  owner: {
-    id: string
-  }
-  stargazerCount: number
-}
-
-interface RepoListSearchQuery {
-  search: Search
-}
+import { RepoListSearchQuery, RepoListSearchQuery$data } from './__generated__/RepoListSearchQuery.graphql'
 
 const RepoListQuery = graphql`
     query RepoListSearchQuery($query: String!) {
@@ -53,13 +30,12 @@ const RepoListQuery = graphql`
     }
 `
 
+const preLoadedQuery = loadQuery(RelayEnv, RepoListQuery, { query: 'is:public' })
+
 export function RepoList() {
   const [repoName, setRepoName] = useState('')
-  const data = useClientQuery(RepoListQuery, { query: repoName }) as RepoListSearchQuery
-
-  useEffect(function () {
-    loadQuery(RelayEnv, RepoListQuery, { query: repoName || 'is:public' })
-  }, [])
+  const [queryRef, loadQuery] = useQueryLoader<RepoListSearchQuery>(RepoListQuery)
+  const data = usePreloadedQuery(RepoListQuery, queryRef ?? preLoadedQuery) as RepoListSearchQuery$data
 
   function renderRepository() {
     return (data?.search?.edges ?? []).map((record) => {
@@ -76,16 +52,19 @@ export function RepoList() {
     setRepoName((e.target as HTMLInputElement).value)
   }
 
-  function search() {
-    loadQuery(RelayEnv, RepoListQuery, { query: repoName || 'is:public' })
+  function search(e?: SyntheticEvent<HTMLFormElement | HTMLButtonElement>) {
+    e?.preventDefault()
+    loadQuery({ ...queryRef?.variables, query: repoName })
   }
 
   return (
     <div className="max-w-screen-md mx-auto px-4">
       <div>Hey~ I ❤️ TypeScript.</div>
       <div>
-        <input type="text" className="border border-1 p-1 rounded w-1/2" onChange={onRepoNameChange} value={repoName} />
-        <button type="button" className="border border-1 p-1 ml-2 rounded" onClick={search}>Search</button>
+        <form onSubmit={search}>
+          <input type="text" className="border border-1 p-1 rounded w-1/2" onChange={onRepoNameChange} value={repoName} />
+          <button type="submit" className="border border-1 p-1 ml-2 rounded" onClick={search}>Search</button>
+        </form>
       </div>
       <ul className="text-left">
         {renderRepository()}
