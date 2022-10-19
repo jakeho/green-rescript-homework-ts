@@ -34,35 +34,40 @@ let make = () => {
     (),
   )
 
-  <div className="p-5">
-    <div className="text-right">
+  <div className="mx-auto p-2 w-4/5">
+    <div className="text-right px-2">
       {`Total Repos:`->React.string}
       {data.search.repositoryCount->Belt_Int.toString->React.string}
     </div>
-    <div className="mt-2">
+    <ul className="mt-2">
       {switch data.search.edges {
       | Some(edge) =>
         open Belt
         edge
         ->Array.keepMap(edge' => edge')
         ->Array.map(edge' =>
-          <div className="p-1.5">
+          <li className="flex justify-between p-2">
             {
-              let name = switch edge'.node {
+              let (name, stargazerCount) = switch edge'.node {
               | Some(repo) =>
                 switch repo {
-                | #Repository(repo') => repo'.name
-                | _ => ""
+                | #Repository(repo') => (repo'.name, repo'.stargazerCount)
                 }
-              | None => ""
               }
-              name->React.string
+
+              <>
+                <div> {name->React.string} </div>
+                <button className="button border border-1 rounded p-1 px-2">
+                  <span className="mr-1"> {React.string("⭐️")} </span>
+                  {stargazerCount->Int.toString->React.string}
+                </button>
+              </>
             }
-          </div>
+          </li>
         )
         ->React.array
-      | _ => React.string("")
+      | _ => React.null
       }}
-    </div>
+    </ul>
   </div>
 }
