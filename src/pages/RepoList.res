@@ -45,26 +45,25 @@ let make = () => {
         open Belt
         edge
         ->Array.keepMap(edge' => edge')
-        ->Array.map(edge' =>
-          <li className="flex justify-between p-2">
-            {
-              let (name, stargazerCount) = switch edge'.node {
-              | Some(repo) =>
-                switch repo {
-                | #Repository(repo') => (repo'.name, repo'.stargazerCount)
-                }
-              }
-
-              <>
-                <div> {name->React.string} </div>
+        ->Array.map(edge' => {
+          switch edge'.node {
+          | Some(repo) =>
+            switch repo {
+            | #Repository(repo') =>
+              // repo'.owner.id->Js.log
+              <li className="flex justify-between p-2" key={edge'.cursor}>
+                <div> {repo'.name->React.string} </div>
                 <button className="button border border-1 rounded p-1 px-2">
                   <span className="mr-1"> {React.string("⭐️")} </span>
-                  {stargazerCount->Int.toString->React.string}
+                  {repo'.stargazerCount->Int.toString->React.string}
                 </button>
-              </>
+              </li>
+
+            | #UnselectedUnionMember(_str) => React.null
             }
-          </li>
-        )
+          | None => React.null
+          }
+        })
         ->React.array
       | _ => React.null
       }}
