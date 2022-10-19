@@ -4,7 +4,9 @@
     "react-jsx": 3
   },
   "bs-dependencies": [
-    "@rescript/react"
+    "@rescript/react",
+    "rescript-relay",
+    "bs-fetch"
   ],
   "sources": [
     {
@@ -18,5 +20,8 @@
       "in-source": true,
       "suffix": ".bs.js"
     }
+  ],
+  "ppx-flags": [
+    "rescript-relay/ppx"
   ]
 }

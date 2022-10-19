@@ -1,15 +1,19 @@
 import React from 'react'
+import { RelayEnvironmentProvider } from 'react-relay'
 import './App.css'
-import RepoList from './pages/RepoList.bs'
-import { make as Test, Test as Test1 } from './pages/Test.bs'
+import { Loading } from './components/Loading'
+import { make as GithubRepos } from './pages/GithubRepos.bs'
+import { environment } from './RelayEnv.bs'
 
 function App() {
   return (
-    <div className="App">
-      <RepoList />
-      <Test />
-      <Test1.make />
-    </div>
+    <RelayEnvironmentProvider environment={environment}>
+      <div className="App text-sm p-4 max-w-5xl mx-auto">
+        <React.Suspense fallback={<Loading />}>
+          <GithubRepos />
+        </React.Suspense>
+      </div>
+    </RelayEnvironmentProvider>
   )
 }
 
