@@ -12,6 +12,8 @@
 /build
 /lib
 **/__generated__/
+*.bs.js
+*.mjs
 
 # misc
 .DS_Store

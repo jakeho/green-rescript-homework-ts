@@ -8,7 +8,7 @@ import { environment } from './RelayEnv.bs'
 function App() {
   return (
     <RelayEnvironmentProvider environment={environment}>
-      <div className="App text-sm p-4">
+      <div className="App text-sm p-4 max-w-5xl mx-auto">
         <React.Suspense fallback={<Loading />}>
           <GithubRepos />
         </React.Suspense>
