@@ -9,7 +9,13 @@ module Query = %relay(`
         hasPreviousPage
       }
       edges {
-        ...RepoInfo_edges
+        cursor
+        node {
+          ... on Repository {
+            id
+            ...RepoInfo_edges
+          }
+        }
       }
     }
   }
@@ -31,8 +37,14 @@ let make = (~queryRef) => {
         edge
         ->Array.keepMap(edge' => edge')
         ->Array.map(edge' => {
-          edge'->Js.log
-          <RepoInfo repo=edge'.fragmentRefs />
+          switch edge'.node {
+          | Some(node) =>
+            switch node {
+            | #Repository(node) => <RepoInfo repo=node.fragmentRefs key=node.id />
+            | _ => React.null
+            }
+          | _ => React.null
+          }
         })
         ->React.array
       | _ => React.null
