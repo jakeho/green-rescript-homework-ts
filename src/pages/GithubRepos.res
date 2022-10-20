@@ -29,7 +29,12 @@ let make = () => {
     </form>
     <React.Suspense fallback={<Loading />}>
       {switch queryRef {
-      | Some(queryRef) => <RepoList queryRef />
+      | Some(queryRef) =>
+        <>
+          <RepoPagination queryRef />
+          <RepoList queryRef />
+        </>
+
       | None => React.null
       }}
     </React.Suspense>

@@ -9,16 +9,7 @@ module Query = %relay(`
         hasPreviousPage
       }
       edges {
-        cursor
-        node {
-          ... on Repository {
-            name
-            owner {
-              id
-            }
-            stargazerCount
-          }
-        }
+        ...RepoInfo_edges
       }
     }
   }
@@ -40,18 +31,8 @@ let make = (~queryRef) => {
         edge
         ->Array.keepMap(edge' => edge')
         ->Array.map(edge' => {
-          switch edge'.node {
-          | Some(repo) =>
-            switch repo {
-            | #Repository(repo') =>
-              <li className="flex justify-between p-2" key={repo'.name ++ repo'.owner.id}>
-                <div> {repo'.name->React.string} </div>
-                <StarButton count={repo'.stargazerCount} />
-              </li>
-            | #UnselectedUnionMember(_str) => React.null
-            }
-          | None => React.null
-          }
+          edge'->Js.log
+          <RepoInfo repo=edge'.fragmentRefs />
         })
         ->React.array
       | _ => React.null
