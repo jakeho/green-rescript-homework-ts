@@ -1,12 +1,18 @@
 module Query = %relay(`
   query RepoListSearchQuery($query: String!) {
-    ...RepoList_frag_search
+    ...RepoList_frag_search @arguments(query: $query)
   }
 `)
 
 module Fragment = %relay(`
-  fragment RepoList_frag_search on Query {
-    search(query: $query, type: REPOSITORY, first: 20) {
+  fragment RepoList_frag_search on Query
+  @refetchable(queryName: "RepoListSearchQueryFrag")
+  @argumentDefinitions(
+    first: { type: "Int", defaultValue: 20 }
+    after: { type: "String" }
+    query: { type: "String!" }
+  ) {
+    search(query: $query, type: REPOSITORY, first: $first, after: $after) {
       repositoryCount
       pageInfo {
         startCursor
