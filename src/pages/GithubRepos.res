@@ -11,15 +11,22 @@ let make = () => {
     (e->ReactEvent.Synthetic.target)["value"]->setKeyword
   }
 
+  let onSubmit = e => {
+    e->ReactEvent.Form.preventDefault
+    onSearch()
+  }
+
   <>
     <div> {React.string("Hey~ I ❤️ ReScript.")} </div>
-    <input type_="text" className="border-solid border rounded w-1/2 p-1" onChange />
-    <button
-      type_="submit"
-      className="button border rounded p-1 px-4 bg-amber-100 ml-1"
-      onClick={onSearch}>
-      {React.string("Search")}
-    </button>
+    <form onSubmit>
+      <input type_="text" className="border-solid border rounded w-1/2 p-1" onChange />
+      <button
+        type_="submit"
+        className="button border rounded p-1 px-4 bg-amber-100 ml-1"
+        onClick={onSearch}>
+        {React.string("Search")}
+      </button>
+    </form>
     <React.Suspense fallback={<Loading />}>
       {switch queryRef {
       | Some(queryRef) => <RepoList queryRef />
