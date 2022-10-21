@@ -7,6 +7,7 @@ module Fragment = %relay(`
       id
     }
     stargazerCount
+    viewerHasStarred
   }
 `)
 
@@ -17,8 +18,12 @@ let make = (~repo) => {
   <li className="flex justify-between p-2">
     <div className="text-left">
       <div className="text-base font-semibold"> {repoInfo.name->React.string} </div>
-      <div className="text-gray-400"> {repoInfo.description->Belt_Option.getWithDefault("")->React.string} </div>
+      <div className="text-gray-400">
+        {repoInfo.description->Belt_Option.getWithDefault("")->React.string}
+      </div>
     </div>
-    <StarButton count={repoInfo.stargazerCount} />
+    <StarButton
+      count={repoInfo.stargazerCount} starred={repoInfo.viewerHasStarred} id={repoInfo.id}
+    />
   </li>
 }
