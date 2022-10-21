@@ -36,14 +36,14 @@ module Fragment = %relay(`
 
 @react.component
 let make = (~queryRef) => {
-  let data = Query.usePreloaded(~queryRef, ())
-  let {data: pageData} = data.fragmentRefs->Fragment.usePagination
-  let fragData = pageData.search->Fragment.getConnectionNodes
+  let res = Query.usePreloaded(~queryRef, ())
+  let {data} = res.fragmentRefs->Fragment.usePagination
+  let fragData = data.search->Fragment.getConnectionNodes
 
   <div className="mx-auto p-2 w-4/5">
     <div className="text-right px-2">
       {`Total Repos:`->React.string}
-      {pageData.search.repositoryCount->Belt_Int.toString->React.string}
+      {data.search.repositoryCount->Belt_Int.toString->React.string}
     </div>
     <ul className="mt-2">
       {

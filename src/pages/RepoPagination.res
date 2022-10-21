@@ -1,7 +1,7 @@
 @react.component
 let make = (~queryRef) => {
-  let data = RepoList.Query.usePreloaded(~queryRef, ())
-  let {hasNext, loadNext} = data.fragmentRefs->RepoList.Fragment.usePagination
+  let res = RepoList.Query.usePreloaded(~queryRef, ())
+  let {hasNext, loadNext} = res.fragmentRefs->RepoList.Fragment.usePagination
 
   <div className="flex mx-auto p-2 w-4/5 sticky top-0 bg-white">
     // <button
