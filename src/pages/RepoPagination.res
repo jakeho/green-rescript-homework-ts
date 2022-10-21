@@ -1,8 +1,7 @@
 @react.component
 let make = (~queryRef) => {
   let res = RepoList.Query.usePreloaded(~queryRef, ())
-  let {data, hasNext, loadNext} = res.fragmentRefs->RepoList.Fragment.usePagination
-  data.search.pageInfo.endCursor->Js.log
+  let {hasNext, loadNext} = res.fragmentRefs->RepoList.Fragment.usePagination
 
   let move = _ => {
     loadNext(~count=20, ())->ignore
