@@ -1,6 +1,19 @@
 module Query = %relay(`
   query RepoListSearchQuery($query: String!) {
-    search(query: $query, type: REPOSITORY, first: 20) {
+    ...RepoList_frag_search @arguments(query: $query)
+  }
+`)
+
+module Fragment = %relay(`
+  fragment RepoList_frag_search on Query
+  @refetchable(queryName: "RepoListSearchQueryFrag")
+  @argumentDefinitions(
+    first: { type: "Int", defaultValue: 20 }
+    after: { type: "String" }
+    query: { type: "String!" }
+  ) {
+    search(query: $query, type: REPOSITORY, first: $first, after: $after)
+      @connection(key: "RepoList__search") {
       repositoryCount
       pageInfo {
         startCursor
@@ -12,11 +25,8 @@ module Query = %relay(`
         cursor
         node {
           ... on Repository {
-            name
-            owner {
-              id
-            }
-            stargazerCount
+            id
+            ...RepoInfo_edges
           }
         }
       }
@@ -25,44 +35,28 @@ module Query = %relay(`
 `)
 
 @react.component
-let make = () => {
-  // how to declare queries and use them?
-  let data = Query.use(
-    ~variables={
-      query: "is:public",
-    },
-    (),
-  )
+let make = (~queryRef) => {
+  let res = Query.usePreloaded(~queryRef, ())
+  let {data} = res.fragmentRefs->Fragment.usePagination
+  let fragData = data.search->Fragment.getConnectionNodes
 
-  <div className="p-5">
-    <div className="text-right">
+  <div className="mx-auto p-2 w-4/5">
+    <div className="text-right px-2">
       {`Total Repos:`->React.string}
       {data.search.repositoryCount->Belt_Int.toString->React.string}
     </div>
-    <div className="mt-2">
-      {switch data.search.edges {
-      | Some(edge) =>
+    <ul className="mt-2">
+      {
         open Belt
-        edge
-        ->Array.keepMap(edge' => edge')
-        ->Array.map(edge' =>
-          <div className="p-1.5">
-            {
-              let name = switch edge'.node {
-              | Some(repo) =>
-                switch repo {
-                | #Repository(repo') => repo'.name
-                | _ => ""
-                }
-              | None => ""
-              }
-              name->React.string
-            }
-          </div>
-        )
+        fragData
+        ->Array.map(node => {
+          switch node {
+          | #Repository(node) => <RepoInfo repo=node.fragmentRefs key=node.id />
+          | _ => React.null
+          }
+        })
         ->React.array
-      | _ => React.string("")
-      }}
-    </div>
+      }
+    </ul>
   </div>
 }
