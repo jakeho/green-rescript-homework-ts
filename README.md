@@ -1,46 +1,32 @@
-# Getting Started with Create React App
+# Homework for front-end candidates of Greenlabs
+You need to create an application that you can search GitHub repositories, and can star/unstar repositories in the list of search result.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- You should use Relay
+- You should use React (Next.js also good)
+- It would be better to write in Rescript but you may choose JavaScript or TypeScript.
 
-## Available Scripts
+## Scripts
 
-In the project directory, you can run:
+There are 3 parts you need to run to build or run the application.
 
-### `npm start`
+### Relay
+`relay:start` is for build and watch Rescript-Relay compiler
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Rescript
+Rescript-Relay is building related files by `relay:start` or `relay:build`.
+Then you should run `res:start` to make Rescript complier watches the files and compile into JavaScript.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### React
+`npm start` will run a local server using `react-rescript`.
 
-### `npm test`
+## Token
+This application uses GraphQL API of GitHub.
+To see the repositories and stargaze, you need to provide a token.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To do that, create a dotenv file - `env.local` and put your token to a key `REACT_APP_GITHUB_AUTH_TOKEN`.
 
-### `npm run build`
+**.env.local**
+```dotenv
+REACT_APP_GITHUB_AUTH_TOKEN=YOUR_TOKEN_HERE
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
