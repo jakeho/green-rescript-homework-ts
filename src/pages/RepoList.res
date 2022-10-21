@@ -37,7 +37,7 @@ module Fragment = %relay(`
 @react.component
 let make = (~queryRef) => {
   let data = Query.usePreloaded(~queryRef, ())
-  let {data: pageData} = Fragment.usePagination(data.fragmentRefs)
+  let {data: pageData} = data.fragmentRefs->Fragment.usePagination
   let fragData = pageData.search->Fragment.getConnectionNodes
 
   <div className="mx-auto p-2 w-4/5">
