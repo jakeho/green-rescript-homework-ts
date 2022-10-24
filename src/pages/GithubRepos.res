@@ -1,7 +1,6 @@
 module Query = %relay(`
   query GithubReposQuery($query: String!) {
     ...RepoList_frag_search @arguments(query: $query)
-    ...RepoPagination_frag_search @arguments(query: $query)
   }
 `)
 
@@ -36,10 +35,7 @@ let make = () => {
       </button>
     </form>
     <React.Suspense fallback={<Loading />}>
-      {<>
-        <RepoPagination queryRef=res.fragmentRefs />
-        <RepoList queryRef=res.fragmentRefs />
-      </>}
+      <RepoList queryRef=res.fragmentRefs />
     </React.Suspense>
   </>
 }
