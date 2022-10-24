@@ -1,9 +1,3 @@
-module Query = %relay(`
-  query RepoListSearchQuery($query: String!) {
-    ...RepoList_frag_search @arguments(query: $query)
-  }
-`)
-
 module Fragment = %relay(`
   fragment RepoList_frag_search on Query
   @refetchable(queryName: "RepoListSearchQueryFrag")
@@ -36,8 +30,7 @@ module Fragment = %relay(`
 
 @react.component
 let make = (~queryRef) => {
-  let res = Query.usePreloaded(~queryRef, ())
-  let {data} = res.fragmentRefs->Fragment.usePagination
+  let {data} = queryRef->Fragment.usePagination
   let fragData = data.search->Fragment.getConnectionNodes
 
   <div className="mx-auto p-2 w-4/5">

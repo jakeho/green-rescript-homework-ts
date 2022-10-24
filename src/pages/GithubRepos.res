@@ -1,14 +1,22 @@
+module Query = %relay(`
+  query GithubReposQuery($query: String!) {
+    ...RepoList_frag_search @arguments(query: $query)
+    ...RepoPagination_frag_search @arguments(query: $query)
+  }
+`)
+
 @react.component
 let make = () => {
-  let (queryRef, loadQuery, _disposeQuery) = RepoList.Query.useLoader()
+  let (inputText, setInputText) = React.useState(_ => "")
   let (keyword, setKeyword) = React.useState(_ => "")
+  let res = Query.use(~variables={query: keyword}, ())
 
   let onSearch = _ => {
-    loadQuery(~variables={query: keyword}, ())
+    setKeyword(_ => inputText)
   }
 
   let onChange = e => {
-    (e->ReactEvent.Synthetic.target)["value"]->setKeyword
+    (e->ReactEvent.Synthetic.target)["value"]->setInputText
   }
 
   let onSubmit = e => {
@@ -28,15 +36,10 @@ let make = () => {
       </button>
     </form>
     <React.Suspense fallback={<Loading />}>
-      {switch queryRef {
-      | Some(queryRef) =>
-        <>
-          <RepoPagination queryRef />
-          <RepoList queryRef />
-        </>
-
-      | None => React.null
-      }}
+      {<>
+        <RepoPagination queryRef=res.fragmentRefs />
+        <RepoList queryRef=res.fragmentRefs />
+      </>}
     </React.Suspense>
   </>
 }

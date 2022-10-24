@@ -20,7 +20,7 @@
     "relay:start": "npm run relay:build -- --watch",
     "relay:build": "mkdir -p src/__generated__ && rescript-relay-compiler",
     "predev": "npm run res:clean && npm run relay:clean",
-    "dev": "concurrently npm:relay:start npm:res:start npm:start"
+    "dev": "concurrently npm:relay:start npm:res:start"
   },
   "eslintConfig": {
     "extends": [

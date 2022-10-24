@@ -1,7 +1,36 @@
+module Fragment = %relay(`
+  fragment RepoPagination_frag_search on Query
+  @refetchable(queryName: "RepoPaginationFrag")
+  @argumentDefinitions(
+    first: { type: "Int", defaultValue: 20 }
+    after: { type: "String" }
+    query: { type: "String!" }
+  ) {
+    search(query: $query, type: REPOSITORY, first: $first, after: $after)
+      @connection(key: "RepoList__search") {
+      repositoryCount
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          ... on Repository {
+            id
+            ...RepoInfo_edges
+          }
+        }
+      }
+    }
+  }
+`)
+
 @react.component
 let make = (~queryRef) => {
-  let res = RepoList.Query.usePreloaded(~queryRef, ())
-  let {hasNext, loadNext} = res.fragmentRefs->RepoList.Fragment.usePagination
+  let {hasNext, loadNext} = queryRef->Fragment.usePagination
 
   let move = _ => {
     loadNext(~count=20, ())->ignore
