@@ -26,21 +26,22 @@ let parseParam = (search: string, param: string) => {
 }
 
 @react.component
-let make = () => {
+let make = (~after: option<'a>, ~before: option<'a>, ~last: option<int>, ~first: option<int>) => {
   let (inputText, setInputText) = React.useState(_ => "")
   let (keyword, setKeyword) = React.useState(_ => "")
-  let url = RescriptReactRouter.useUrl()
-  let after = url.search->parseParam("after")
-  let before = url.search->parseParam("before")
-  let res = switch before {
-  | Some(before) =>
-    Query.use(
-      ~variables={query: keyword, after: None, before: Some(before), last: Some(20), first: None},
-      (),
-    )
-  | None =>
-    Query.use(~variables={query: keyword, after, before: None, last: None, first: Some(20)}, ())
-  }
+  // let url = RescriptReactRouter.useUrl()
+  // let after = url.search->parseParam("after")
+  // let before = url.search->parseParam("before")
+  let res = Query.use(~variables={query: keyword, after, before, last, first}, ())
+  // let res = switch before {
+  // | Some(before) =>
+  //   Query.use(
+  //     ~variables={query: keyword, after: None, before: Some(before), last: Some(20), first: None},
+  //     (),
+  //   )
+  // | None =>
+  //   Query.use(~variables={query: keyword, after, before: None, last: None, first: Some(20)}, ())
+  // }
 
   let onSearch = _ => {
     setKeyword(_ => inputText)

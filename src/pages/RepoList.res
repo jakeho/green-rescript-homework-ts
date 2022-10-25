@@ -1,3 +1,11 @@
+type location
+@val @scope(("window"))
+external location: location = "location"
+@set external href: (location, string) => unit = "href"
+
+// @send 는 href()
+// @set href = ...
+
 module Fragment = %relay(`
   fragment RepoList_frag_search on Query
   @refetchable(queryName: "RepoListSearchQueryFrag")
@@ -44,19 +52,22 @@ let make = (~queryRef) => {
     search: {pageInfo: {hasNextPage, hasPreviousPage, startCursor, endCursor}, repositoryCount},
   } = data
 
+  let push = (url) => location->href(url)
+  
   let onMoveNext = _ => {
     switch endCursor {
-    | Some(cursor) => RescriptReactRouter.push("/?after=" ++ cursor)
+    | Some(cursor) => push("/?after=" ++ cursor)
     | None => ()
     }
   }
 
   let onMovePrev = _ => {
     switch startCursor {
-    | Some(cursor) => RescriptReactRouter.push("/?before=" ++ cursor)
+    | Some(cursor) => push("/?before=" ++ cursor)
     | None => ()
     }
   }
+  
 
   <div className="mx-auto p-2 w-4/5">
     {repositoryCount > 0
