@@ -12,8 +12,8 @@ module Fragment = %relay(`
 `)
 
 @react.component
-let make = (~repo) => {
-  let repoInfo = Fragment.use(repo)
+let make = (~fragRefs) => {
+  let repoInfo = fragRefs->Fragment.use
 
   <li className="flex justify-between p-2">
     <div className="text-left">

@@ -1,14 +1,53 @@
+module Query = %relay(`
+  query GithubReposQuery(
+    $query: String!
+    $after: String
+    $before: String
+    $last: Int
+    $first: Int
+  ) {
+    ...RepoList_frag_search
+      @arguments(
+        query: $query
+        after: $after
+        before: $before
+        last: $last
+        first: $first
+      )
+  }
+`)
+
+let parseParam = (search: string, param: string) => {
+  let res = Js.Re.fromString(param ++ "=([\\w\\d]+)[&|$]?")->Js.Re.exec_(search)
+  switch res {
+  | Some(r) => Js.Nullable.toOption(Js.Re.captures(r)[1])
+  | None => None
+  }
+}
+
 @react.component
 let make = () => {
-  let (queryRef, loadQuery, _disposeQuery) = RepoList.Query.useLoader()
+  let (inputText, setInputText) = React.useState(_ => "")
   let (keyword, setKeyword) = React.useState(_ => "")
+  let url = RescriptReactRouter.useUrl()
+  let after = url.search->parseParam("after")
+  let before = url.search->parseParam("before")
+  let res = switch before {
+  | Some(before) =>
+    Query.use(
+      ~variables={query: keyword, after: None, before: Some(before), last: Some(20), first: None},
+      (),
+    )
+  | None =>
+    Query.use(~variables={query: keyword, after, before: None, last: None, first: Some(20)}, ())
+  }
 
   let onSearch = _ => {
-    loadQuery(~variables={query: keyword}, ())
+    setKeyword(_ => inputText)
   }
 
   let onChange = e => {
-    (e->ReactEvent.Synthetic.target)["value"]->setKeyword
+    (e->ReactEvent.Synthetic.target)["value"]->setInputText
   }
 
   let onSubmit = e => {
@@ -28,15 +67,7 @@ let make = () => {
       </button>
     </form>
     <React.Suspense fallback={<Loading />}>
-      {switch queryRef {
-      | Some(queryRef) =>
-        <>
-          <RepoPagination queryRef />
-          <RepoList queryRef />
-        </>
-
-      | None => React.null
-      }}
+      <RepoList queryRef=res.fragmentRefs />
     </React.Suspense>
   </>
 }
